@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大渡河 1935 · 飞夺泸定桥</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--red:#b52b25;--gold:#d5b66c;--ink:#e8e0ce}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#0c1215;
+  font-family:"Microsoft YaHei","Segoe UI",sans-serif;user-select:none}
+canvas{display:block}button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+#err{position:fixed;z-index:99;top:0;left:0;right:0;background:#5c110c;color:#ffe0d6;
+  padding:6px 12px;font:12px Consolas,monospace;display:none;white-space:pre-wrap}
+#hud{position:absolute;inset:0;pointer-events:none;z-index:8}
+#top{position:absolute;left:22px;top:20px;text-shadow:0 2px 6px #000}
+#top h3{margin:0;font-size:20px;letter-spacing:4px;color:#f2e7cd;font-weight:600}
+#top small{display:block;margin-top:5px;color:#c8bfa8;font-size:12px;letter-spacing:2px}
+#compass{position:absolute;top:16px;left:50%;transform:translateX(-50%)}
+#info{position:absolute;left:50%;top:64px;transform:translateX(-50%);text-align:center;
+  background:rgba(8,13,14,.58);border-left:3px solid var(--red);padding:7px 22px;min-width:340px}
+#info b{font-size:14px;color:var(--gold);letter-spacing:2px}
+#info div{font-size:12px;color:#d8d2c4;margin-top:4px}
+#cross{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;
+  background:#eee9db;box-shadow:0 0 4px #000;transform:translate(-50%,-50%)}
+#tips{position:absolute;left:50%;bottom:18%;transform:translateX(-50%);font-size:14px;
+  color:#f3e6c7;background:rgba(8,12,12,.7);padding:8px 20px;border:1px solid #5d503a;
+  opacity:0;transition:opacity .25s;white-space:nowrap}
+#stance{position:absolute;left:24px;bottom:24px;color:#e4d9bd;font-size:13px;
+  letter-spacing:2px;text-shadow:0 2px 4px #000}
+#stance b{display:inline-block;border:1px solid #8c7650;color:#f0d18a;padding:4px 10px;margin-right:10px}
+#controls{position:absolute;right:22px;bottom:22px;background:rgba(8,13,14,.65);
+  padding:12px 16px;color:#c9c1ae;font-size:12px;line-height:1.85;border:1px solid #374347;pointer-events:none}
+#controls kbd{background:#293133;border:1px solid #66716c;border-radius:3px;padding:0 5px;color:#eee4cd}
+#envPanel{position:absolute;right:22px;top:20px;min-width:250px;background:rgba(8,13,14,.68);
+  border:1px solid #3d4c4c;padding:10px 12px;color:#c9c1ae;font-size:12px;pointer-events:auto}
+#envPanel .env-title{color:#e4d3a8;letter-spacing:2px;margin-bottom:7px}
+#envPanel .env-title span{float:right;color:#b9c4bc;letter-spacing:0}
+#envPanel .env-row{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
+#envPanel button{background:#1a272b;border:1px solid #4b5e5d;color:#c9d0c4;font-size:11px;
+  padding:4px 8px;border-radius:2px}
+#envPanel button:hover{border-color:#9f8660;color:#f0dfbd}
+#envPanel button[data-active="1"]{background:#744332;border-color:#b2764c;color:#fff}
+#envPanel label{margin-left:5px;white-space:nowrap}
+#envPanel input{vertical-align:-2px;accent-color:#a33b2d}
+#envPanel .env-hint{margin-top:7px;color:#7f8c86;font-size:10px;letter-spacing:1px}
+#progress{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);width:320px;
+  height:5px;background:#182124;border:1px solid #52605a;display:none}
+#progress i{display:block;height:100%;width:0;background:#c13a2d}
+.overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center}
+#menu{background:linear-gradient(90deg,rgba(4,9,11,.82) 0%,rgba(4,9,11,.48) 50%,rgba(4,9,11,.12) 100%)}
+.menu-inner{position:absolute;left:7%;top:12%;max-width:620px}
+.star{color:#c63c2c;font-size:38px;text-shadow:0 0 20px #a62920}
+h1{font-size:56px;letter-spacing:12px;color:#f2e8d3;margin:6px 0 2px;text-shadow:0 3px 12px #000}
+h2{font-size:17px;letter-spacing:6px;color:var(--gold);font-weight:400;margin:0 0 24px}
+.brief{color:#d0c7b5;font-size:14px;line-height:1.95;border-left:3px solid #9c2c24;padding-left:16px;max-width:540px}
+.brief strong{color:#f0dfb9;font-weight:600}
+.btn{display:inline-block;margin-top:22px;padding:12px 42px;border:1px solid #b43a2d;background:#a52b23;
+  color:#fff;font-weight:700;letter-spacing:6px;font-size:18px;border-radius:2px;box-shadow:0 5px 22px #0008}
+.btn:hover{background:#c0392e}.btn.sub{background:#142025;border-color:#52625e;font-size:13px;
+  letter-spacing:3px;padding:9px 24px;margin-left:10px;font-weight:400}
+.chapters{display:flex;gap:12px;margin-top:28px;max-width:700px}
+.chapter{width:190px;padding:12px 14px;background:rgba(9,16,18,.72);border:1px solid #3d4948;
+  color:#bcb3a0;font-size:12px;line-height:1.65}
+.chapter b{display:block;color:#d8c49a;font-size:13px;margin-bottom:4px}
+.chapter.active{border-color:#9f352b}.chapter span{color:#857d6d;font-size:11px}
+.note{font-size:11px;color:#928b7b;margin-top:16px;letter-spacing:1px}
+#pause{background:rgba(3,8,10,.65)}.panel{background:rgba(9,15,17,.96);border:1px solid #665438;
+  padding:26px 42px;text-align:center;min-width:330px}.panel h3{letter-spacing:6px;color:#ead8b4}
+.panel button{display:block;width:100%;margin:10px 0}
+#help{position:absolute;left:22px;top:98px;max-width:280px;background:rgba(7,12,14,.64);
+  border:1px solid #3c4b4d;padding:12px 16px;color:#c9c1ad;font-size:12px;line-height:1.8}
+#help b{color:#e6d2a2}
+#hitvig{position:fixed;inset:0;pointer-events:none;z-index:30;opacity:0;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(148,12,6,.6) 96%)}
+</style>
+</head>
+<body>
+<div id="err"></div>
+<div id="game"></div>
+<div id="hitvig"></div>
+<canvas id="compass" width="440" height="30"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="top"><h3>飞夺泸定桥</h3><small>1935年5月29日 · 大渡河</small></div>
+  <div id="info"><b>十三根铁索 · 场景示范</b><div id="objective">前往西岸桥头，按 C 匍匐攀索</div></div>
+  <div id="cross"></div>
+  <div id="tips"></div>
+  <div id="stance"><b id="stance-name">站立</b><span id="bridge-status">西岸桥头</span></div>
+  <div id="controls">
+    <kbd>WASD</kbd> 移动　鼠标 视角　<kbd>Shift</kbd> 疾跑<br>
+    <kbd>C</kbd> 站立 / 匍匐攀索　<kbd>Space</kbd> 跳跃<br>
+    <kbd>B</kbd> 铺板演示　<kbd>F</kbd> 巡桥运镜<br>
+    <kbd>Home</kbd> 回到西岸　<kbd>Esc</kbd> 暂停<br>
+    <kbd>T</kbd> 时间　<kbd>R</kbd> 天气　<kbd>N</kbd> 昼夜循环　<kbd>F3</kbd> 性能面板
+  </div>
+  <div id="envPanel">
+    <div class="env-title">环境 <span id="env-label">晴日</span></div>
+    <div class="env-row">
+      <button data-time="day">晴日</button><button data-time="dusk">黄昏</button><button data-time="night">晴夜</button>
+    </div>
+    <div class="env-row">
+      <button data-weather="clear">晴天</button><button data-weather="rain">下雨</button>
+      <label><input id="env-auto" type="checkbox"> 昼夜循环</label>
+    </div>
+    <div class="env-row">
+      <button data-plank="none">拆空</button><button data-plank="full">铺满</button><button data-plank="broken">残缺·燃烧</button>
+    </div>
+    <div class="env-hint">T 时间 · R 天气 · N 循环</div>
+  </div>
+  <div id="progress"><i></i></div>
+  <div id="help"><b>本版重点</b><br>泸定桥完整场景示范：9 根底链 + 4 根扶手链、桥板抽除与铺设（环境面板可切 拆空/铺满/残缺·燃烧）、亭廊骑跨桥头、石砌引桥墙、川军对岸巡逻、峡谷大渡河。射击与三关战役将在下一阶段接入。</div>
+</div>
+
+<div id="menu" class="overlay">
+  <div class="menu-inner">
+    <div class="star">★</div>
+    <h1>飞夺泸定桥</h1>
+    <h2>大渡河 · 1935</h2>
+    <div class="brief">1935年5月，红军沿大渡河夹江北上。红四团一昼夜急行军二百四十里，赶赴泸定桥。守军拆去桥板，只剩十三根铁索横悬江上。<strong>22名勇士攀索突击，后续部队跟进铺板，在火力掩护下夺下桥头。</strong></div>
+    <button class="btn" id="btn-start">进入铁索桥</button>
+    <button class="btn sub" id="btn-tour">巡桥运镜</button>
+    <div class="chapters">
+      <div class="chapter"><b>第一关 · 河谷急行</b>沿江栈道与阻击<br><span>总体框架 · 后续细化</span></div>
+      <div class="chapter active"><b>第二关 · 十三根铁索</b>攀索突击与铺板<br><span>本版场景示范</span></div>
+      <div class="chapter"><b>第三关 · 桥头与县城</b>穿火攻坚与巷战<br><span>总体框架 · 后续细化</span></div>
+    </div>
+    <div class="note">基于史实改编的场景预演 · 独立项目 · 全部程序化建模 · WASD + 鼠标</div>
+  </div>
+</div>
+
+<div id="pause" class="overlay hidden">
+  <div class="panel">
+    <h3>暂 停</h3>
+    <button class="btn" id="btn-resume">继续漫游</button>
+    <button class="btn sub" id="btn-home">回到西岸桥头</button>
+    <button class="btn sub" id="btn-menu">返回主菜单</button>
+  </div>
+</div>
+
+<script>window.L={version:'0.9.6-combat'};window.addEventListener('error',function(e){
+  var d=document.getElementById('err');d.style.display='block';
+  d.textContent='脚本错误: '+(e.message||e)+' @'+(e.lineno||'');});</script>
+<script src="three.min.js"></script>
+<script>/* 版本号只在这一处维护；动态插入保持加载顺序（async=false 保序） */
+(function(){var v='63';
+['assets/tree_geo.js','assets/soldier_geo.js','assets/mg_geo.js','assets/officer_geo.js','js/bridge.js','js/world.js','js/main.js'].forEach(function(s){
+  var el=document.createElement('script');el.src=s+'?v='+v;el.async=false;document.body.appendChild(el);});})();</script>
+</body>
+</html>
